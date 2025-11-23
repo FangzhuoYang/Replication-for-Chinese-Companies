@@ -2,27 +2,27 @@ import pandas as pd
 import numpy as np
 from scipy.stats import norm
 
-# 读取 .csv 文件
+# read from .csv file
 df = pd.read_csv('/Users/yangfangzhuo/Desktop/助研/专利价值计算/cn_stock_patent.csv')
 
 gamma = 0.007
 
 def calculate_patent_value(df, gamma):
-    """计算正态分布假设下的专利价值（与Stata代码完全一致）"""
+    # calculate patent value under normal distribution assumption
     result_df = df.copy()
     
     try:
-        # 步骤1: 缺失值处理（与Stata一致）
+        # step 1: deal with missing values
         result_df['ret_d0'] = result_df['ret_d0'].fillna(0)
         result_df['ret_d1'] = result_df['ret_d1'].fillna(0)
         result_df['ret_d2'] = result_df['ret_d2'].fillna(0)
        
-        # 步骤2: 计算累计收益率 R（使用对数计算，与Stata一致）
+        # step 2: calculate return R
         result_df['R'] = np.exp(np.log(1 + result_df['ret_d0']) + 
                                np.log(1 + result_df['ret_d1']) + 
                                np.log(1 + result_df['ret_d2'])) - 1
        
-        # 步骤3: 计算波动率 v
+        # step 3: calculate volatility v
         result_df['v'] = result_df['vol'] * np.sqrt(3)
      
         # 步骤4: 计算信噪比参数 delta
